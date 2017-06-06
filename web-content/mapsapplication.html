@@ -9,9 +9,8 @@
   <link rel="stylesheet" href="now-ui-kit-v1.0.0/assets/css/now-ui-kit.css">
 
   <style>
-    .map-canvas {
-      width: 100%;
-      height: 580px;
+    .map {
+      height: 100%;
     }
   </style>
 </head>
@@ -26,18 +25,20 @@
       <strong>Oh snap!</strong> Google maps could not load the initial locations
     </div>
     <div class="row">
-      <div class="col-md-8">
-        <div data-bind="mapPanel" class="map-canvas"></div>
+      <div class="col-md-8 map">
+        <div class="embed-responsive embed-responsive-4by3">
+          <div class="embed-responsive-item" id="map"></div>
+        </div>
       </div>
       <div class="col-md-4">
         <div class="input-group form-group-no-border">
-            <span class="input-group-addon">
+          <span class="input-group-addon">
                 <i class="fa fa-filter"></i>
             </span>
-            <input type="text" class="form-control" placeholder="Left Font Awesome Icon">
+          <input type="text" data-bind="textInput: filterInput" class="form-control" placeholder="Filter results here.">
         </div>
-        <ul data-bind="foreach: mapsModel.markers" class="list-group">
-          <a href="#" class="list-group-item list-group-item-action" data-bind="text: name"></a>
+        <ul data-bind="foreach: locationArray" class="list-group">
+          <a href="#" class="list-group-item list-group-item-action" data-bind="text: name, click: $parent.showLocation, visible: show"></a>
         </ul>
       </div>
     </div>
@@ -46,8 +47,10 @@
   <script type="text/javascript" src="javascript/jquery-3.2.1.js"></script>
   <script type="text/javascript" src="javascript/knockout-3.4.2.js"></script>
   <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoEjwVtm-SjTeZX3StQ3Xh9fdHCyXCEbU&libraries=places"></script>
-  <script type="text/javascript" src="javascript/mapsapplication.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoEjwVtm-SjTeZX3StQ3Xh9fdHCyXCEbU&libraries=places&callback=initMap"></script>
+  <script type="text/javascript" src="javascript/mapsapplication.js" charset="utf-8">
+    >
+  </script>
 </body>
 
 </html>
