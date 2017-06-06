@@ -862,97 +862,102 @@ var markers = [];
 var stockholm = { lat: 59.32, lng: 18.07 };
 
 function initMap() {
-  // Create initial map
+  // Error handling
+  console.log(typeof google);
+  if (typeof google !== 'undefined') {
 
-  map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 13,
-    center: stockholm
-  });
+    // Create initial map
 
-  var infoWindow = new google.maps.InfoWindow();
-  // Creating markers for each location and loading them into the observable Knockout Array.
+    map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 13,
+      center: stockholm
+    });
 
-  for (var i = 0; i < locations.length; i++) {
-    (function () {
-      var place = locations[i];
-      var marker = new google.maps.Marker({
-        position: place.geometry.location,
-        map: map,
-        name: place.name,
-        animation: google.maps.Animation.DROP
-      });
-      markers.push(marker);
-      mapsApplication.locationArray()[i].marker = marker;
+    var infoWindow = new google.maps.InfoWindow();
+    // Creating markers for each location and loading them into the observable Knockout Array.
 
-      marker.addListener('click', function () {
-        populateInfoWindow(this, infoWindow)
-      });
+    for (var i = 0; i < locations.length; i++) {
+      (function () {
+        var place = locations[i];
+        var marker = new google.maps.Marker({
+          position: place.geometry.location,
+          map: map,
+          name: place.name,
+          animation: google.maps.Animation.DROP
+        });
+        markers.push(marker);
+        mapsApplication.locationArray()[i].marker = marker;
 
-      // Populating the info window
+        marker.addListener('click', function () {
+          populateInfoWindow(this, infoWindow)
+        });
 
-      function populateInfoWindow(marker, infoWindow) {
-        if (infoWindow.marker != marker) {
-          infoWindow.marker = marker;
-          console.log(marker);
-          infoWindow.setContent('<div class="title">' + marker.name + marker.contentString + '</div>');
-          marker.setAnimation(google.maps.Animation.BOUNCE);
-          setTimeout(function () {
-            marker.setAnimation(null);
-          }, 2000);
-          infoWindow.open(map, marker);
+        // Populating the info window
 
-          infoWindow.addListener('closelick', function () {
-            infoWindow.setMarker(null);
-          });
-        }
-      }
+        function populateInfoWindow(marker, infoWindow) {
+          if (infoWindow.marker != marker) {
+            infoWindow.marker = marker;
+            console.log(marker);
+            infoWindow.setContent('<div class="title">' + marker.name + marker.contentString + '</div>');
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(function () {
+              marker.setAnimation(null);
+            }, 2000);
+            infoWindow.open(map, marker);
 
-      // Variables for the Foursquare call
-      var fsClientId = 'O5DTF5Y2B3KPIGN15CBVHJZ11JQYMGHVKU2GHQAX1VRYKNBJ';
-      var fsClientSecret = 'Q0VCJC0ZFHLEI3S5XTFU3ZJT0S31MS1OHEAIU3ARGI2LYNLE';
-      var fsURL = 'https://api.foursquare.com/v2/venues/search'
-      var restaurant;
-      var type;
-      var locURL;
-
-      // Foursquare Ajax call to retrieve additional info
-      $.ajax({
-        url: fsURL,
-        dataType: 'json',
-        data: {
-          client_id: fsClientId,
-          client_secret: fsClientSecret,
-          v: 20161016,
-          near: 'stockholm',
-          query: marker.name
-        },
-        success: function (res) {
-          restaurant = res.response.venues[0];
-          if(restaurant.categories[0].name) {
-            type = restaurant.categories[0].name;
-          } else {
-            type = "No type available for this restaurant."
+            infoWindow.addListener('closelick', function () {
+              infoWindow.setMarker(null);
+            });
           }
-          
-          locURL = 'https://foursquare.com/v/' + restaurant.id;
-          contentString = '<p>' + type + '<p>' + '<p>Link to Foursquare:' + '<a href="' + locURL + '">' + locURL + '</a>' + '</p>';
-          marker.contentString = contentString;
-          console.log(marker.contentString)
-        },
-        error: function (res) {
-          contentString = '<p>Cannot connect to foursquare. Please try again.</p>'
-          marker.contentString = contentString;
         }
-      });
-    })(i);
+
+        // Variables for the Foursquare call
+        var fsClientId = 'O5DTF5Y2B3KPIGN15CBVHJZ11JQYMGHVKU2GHQAX1VRYKNBJ';
+        var fsClientSecret = 'Q0VCJC0ZFHLEI3S5XTFU3ZJT0S31MS1OHEAIU3ARGI2LYNLE';
+        var fsURL = 'https://api.foursquare.com/v2/venues/search'
+        var restaurant;
+        var type;
+        var locURL;
+
+        // Foursquare Ajax call to retrieve additional info
+        $.ajax({
+          url: fsURL,
+          dataType: 'json',
+          data: {
+            client_id: fsClientId,
+            client_secret: fsClientSecret,
+            v: 20161016,
+            near: 'stockholm',
+            query: marker.name
+          },
+          success: function (res) {
+            restaurant = res.response.venues[0];
+            if (restaurant.categories[0].name) {
+              type = restaurant.categories[0].name;
+            } else {
+              type = "No type available for this restaurant."
+            }
+
+            locURL = 'https://foursquare.com/v/' + restaurant.id;
+            contentString = '<p>' + type + '<p>' + '<p>Link to Foursquare:' + '<a href="' + locURL + '">' + locURL + '</a>' + '</p>';
+            marker.contentString = contentString;
+            console.log(marker.contentString)
+          },
+          error: function (res) {
+            contentString = '<p>Cannot connect to foursquare. Please try again.</p>'
+            marker.contentString = contentString;
+          }
+        });
+      })(i);
+    }
+  }
+  else {
+    console.log('google is undefined');
+    mapError();
   }
 }
 
-// Error handeler for Google Maps
 
-function mapError() {
-  alert("Map could not be loaded at this moment. Please try again");
-}
 
 var Location = function (data) {
   var self = this;
@@ -994,7 +999,7 @@ var MapsApplication = function () {
     }
   });
 
-  this.showLocation = function(locationInput) {
+  this.showLocation = function (locationInput) {
     google.maps.event.trigger(locationInput.marker, 'click');
   };
 };
@@ -1002,4 +1007,12 @@ var MapsApplication = function () {
 // New instance of the mapsApplication Knockout function.
 mapsApplication = new MapsApplication();
 
+
+
 ko.applyBindings(mapsApplication);
+
+// Error handeler for Google Maps
+
+function mapError() {
+  alert("Map could not be loaded at this moment. Please try again");
+};
