@@ -31,7 +31,8 @@ function initMap() {
         mapsApplication.locationArray()[i].marker = marker;
 
         marker.addListener('click', function () {
-          populateInfoWindow(this, infoWindow)
+          populateInfoWindow(this, infoWindow);
+          map.setCenter(marker.getPosition());
         });
 
         // Populating the info window
@@ -56,7 +57,7 @@ function initMap() {
         // Variables for the Foursquare call
         var fsClientId = 'O5DTF5Y2B3KPIGN15CBVHJZ11JQYMGHVKU2GHQAX1VRYKNBJ';
         var fsClientSecret = 'Q0VCJC0ZFHLEI3S5XTFU3ZJT0S31MS1OHEAIU3ARGI2LYNLE';
-        var fsURL = 'https://api.foursquare.com/v2/venues/search'
+        var fsURL = 'https://api.foursquare.com/v2/venues/search';
         var restaurant;
         var type;
         var locURL;
@@ -73,16 +74,16 @@ function initMap() {
             query: marker.name
           },
           success: function (res) {
-            restaurant = res.response.venues[0];
-            if (restaurant.categories[0].name) {
+            try {
+              restaurant = res.response.venues[0];
               type = restaurant.categories[0].name;
-            } else {
-              type = "No type available for this restaurant.";
+              locURL = 'https://foursquare.com/v/' + restaurant.id;
+              contentString = '<p>' + type + '<p>' + '<p>Link to Foursquare:' + '<a href="' + locURL + '">' + locURL + '</a>' + '</p>';
+              marker.contentString = contentString;
+            } catch (error) {
+              contentString = '<p>Cannot receive more information for this venue.</p>';
+              marker.contentString = contentString;
             }
-
-            locURL = 'https://foursquare.com/v/' + restaurant.id;
-            contentString = '<p>' + type + '<p>' + '<p>Link to Foursquare:' + '<a href="' + locURL + '">' + locURL + '</a>' + '</p>';
-            marker.contentString = contentString;
           },
           error: function (res) {
             contentString = '<p>Cannot connect to foursquare. Please try again.</p>';
@@ -153,4 +154,4 @@ ko.applyBindings(mapsApplication);
 
 function mapError() {
   alert("Map could not be loaded at this moment. Please try again");
-};
+}
