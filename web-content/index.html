@@ -3,21 +3,16 @@
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Type" content="text/html" />
+  <meta http-equiv="Content-Type" content="text/html">
+  <meta charset="utf-8">
   <title>Stockholm Housing App</title>
 
   <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="now-ui-kit-v1.0.0/assets/css/now-ui-kit.css">
-
-  <style>
-    .map {
-      height: 100%;
-    }
-  </style>
+  <link rel="stylesheet" href="custom.css">
 </head>
 
 <body>
-
   <nav class="navbar navbar-toggleable-md bg-info">
     <a href="#" class="navbar-brand">Stockholm Restaurant Guide</a>
   </nav>
@@ -26,12 +21,12 @@
       <strong>Oh snap!</strong> Google maps could not load the initial locations
     </div>
     <div class="row">
-      <div class="col-md-8 map">
+      <main class="col-md-8 map">
         <div class="embed-responsive embed-responsive-4by3">
           <div class="embed-responsive-item" id="map"></div>
         </div>
-      </div>
-      <div class="col-md-4">
+      </main>
+      <aside class="col-md-4">
         <div class="input-group form-group-no-border">
           <span class="input-group-addon">
                 <i class="fa fa-filter"></i>
@@ -41,15 +36,18 @@
         <ul data-bind="foreach: locationArray" class="list-group">
           <a href="#" class="list-group-item list-group-item-action" data-bind="text: name, click: $parent.showLocation, visible: show"></a>
         </ul>
-      </div>
+      </aside>
     </div>
   </div>
   <script src="https://use.fontawesome.com/012732c203.js"></script>
-  <script type="text/javascript" src="javascript/jquery-3.2.1.js"></script>
-  <script type="text/javascript" src="javascript/knockout-3.4.2.js"></script>
-  <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="javascript/mapsapplication.js" charset="utf-8"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoEjwVtm-SjTeZX3StQ3Xh9fdHCyXCEbU&libraries=places&callback=initMap" onerror="mapError()"></script>
+  <script src="javascript/jquery-3.2.1.js"></script>
+  <script src="javascript/knockout-3.4.2.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+  <script src="bootstrap/js/bootstrap.min.js"></script>
+  <script src="data.js" charset="utf-8"></script>
+  <script src="javascript/mapsapplication.js" charset="utf-8"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoEjwVtm-SjTeZX3StQ3Xh9fdHCyXCEbU&libraries=places&callback=initMap"
+    onerror="mapError()"></script>
 </body>
 
 </html>
